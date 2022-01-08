@@ -45,10 +45,3 @@ func SignIn(db *sql.DB) SignInHandlerFunc {
 		}, nil
 	}
 }
-
-/*
-* idl package path 바꾸기
-* ddl에 unique constraint 만들기
-* auth 서비스 만들기
-* protoc-gen-ddl에 ddl.pb.go 파일 생성 설계 구상하기
- */

@@ -12,6 +12,9 @@ type Setting struct {
 	GRPCServerPort     string
 	HTTPServerPort     string
 
+	ShouldProfile bool
+	ShouldTrace   bool
+
 	MysqlNetworkType  string
 	MysqlAddress      string
 	MysqlUser         string
@@ -40,6 +43,14 @@ func mustAtoi(s string) int {
 	return i
 }
 
+func mustAtob(s string) bool {
+	b, err := strconv.ParseBool(s)
+	if err != nil {
+		log.Panic(err)
+	}
+	return b
+}
+
 func NewSetting() Setting {
 	return Setting{
 		ServiceName:        "user",
@@ -47,8 +58,11 @@ func NewSetting() Setting {
 		GRPCServerPort:     getEnv("GRPC_SERVER_PORT", "18081"),
 		HTTPServerPort:     getEnv("HTTP_SERVER_PORT", "18082"),
 
+		ShouldProfile: mustAtob(getEnv("SHOULD_PROFILE", "false")),
+		ShouldTrace:   mustAtob(getEnv("SHOULD_TRACE", "false")),
+
 		MysqlNetworkType:  getEnv("MYSQL_NETWORK_TYPE", "tcp"),
-		MysqlAddress:      getEnv("MYSQL_ADDRESS", "localhost"),
+		MysqlAddress:      getEnv("MYSQL_ADDRESS", "localhost:3306"),
 		MysqlUser:         getEnv("MYSQL_USER", "taehoio_sa"),
 		MysqlPassword:     getEnv("MYSQL_PASSWORD", ""),
 		MysqlDatabaseName: getEnv("MYSQL_DATABASE_NAME", "taehoio"),
