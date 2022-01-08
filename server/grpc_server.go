@@ -2,8 +2,10 @@ package server
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
+	"github.com/go-sql-driver/mysql"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -13,32 +15,54 @@ import (
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
 
-	userv1 "github.com/taehoio/idl/gen/go/services/user/v1"
+	userv1 "github.com/taehoio/idl/gen/go/taehoio/idl/services/user/v1"
 	"github.com/taehoio/user/config"
+	"github.com/taehoio/user/server/handler"
 )
 
 type UserServiceServer struct {
 	userv1.UserServiceServer
 
 	cfg config.Config
+	db  *sql.DB
 }
 
 func NewUserServiceServer(cfg config.Config) (*UserServiceServer, error) {
+	mysqlCfg := mysql.Config{
+		Net:                  cfg.Setting().MysqlNetworkType,
+		Addr:                 cfg.Setting().MysqlAddress,
+		User:                 cfg.Setting().MysqlUser,
+		Passwd:               cfg.Setting().MysqlPassword,
+		DBName:               cfg.Setting().MysqlDatabaseName,
+		AllowNativePasswords: true,
+		ParseTime:            true,
+	}
+
+	db, err := sql.Open("mysql", mysqlCfg.FormatDSN())
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
 	return &UserServiceServer{
 		cfg: cfg,
+		db:  db,
 	}, nil
 }
 
-func (s *UserServiceServer) HealthCheck(ctx context.Context, in *userv1.HealthCheckRequest) (*userv1.HealthCheckResponse, error) {
+func (s *UserServiceServer) HealthCheck(ctx context.Context, req *userv1.HealthCheckRequest) (*userv1.HealthCheckResponse, error) {
 	return &userv1.HealthCheckResponse{}, nil
 }
 
-func (s *UserServiceServer) SignUp(ctx context.Context, in *userv1.SignUpRequest) (*userv1.SignUpResponse, error) {
-	return &userv1.SignUpResponse{}, nil
+func (s *UserServiceServer) SignUp(ctx context.Context, req *userv1.SignUpRequest) (*userv1.SignUpResponse, error) {
+	return handler.SignUp(s.db)(ctx, req)
 }
 
-func (s *UserServiceServer) SignIn(ctx context.Context, in *userv1.SignInRequest) (*userv1.SignInResponse, error) {
-	return &userv1.SignInResponse{}, nil
+func (s *UserServiceServer) SignIn(ctx context.Context, req *userv1.SignInRequest) (*userv1.SignInResponse, error) {
+	return handler.SignIn(s.db)(ctx, req)
 }
 
 func NewGRPCServer(cfg config.Config) (*grpc.Server, error) {
