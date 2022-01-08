@@ -9,11 +9,12 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/sirupsen/logrus"
-	userv1 "github.com/taehoio/idl/gen/go/services/user/v1"
-	"github.com/taehoio/user/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
+
+	userv1 "github.com/taehoio/idl/gen/go/services/user/v1"
+	"github.com/taehoio/user/config"
 )
 
 type UserServiceServer struct {

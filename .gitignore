@@ -1,5 +1,5 @@
-build
-k8s.yaml
+
+/bin/
 
 # Created by https://www.gitignore.io/api/go,vim,linux,macos,windows,jetbrains+all,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=go,vim,linux,macos,windows,jetbrains+all,visualstudiocode
