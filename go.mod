@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/sirupsen/logrus v1.8.1
-	github.com/taehoio/ddl v0.0.0-20220108154548-54fb07bab49a
+	github.com/taehoio/ddl v0.0.0-20220109040139-a8ce8785d00f
 	go.opencensus.io v0.23.0
 )
 

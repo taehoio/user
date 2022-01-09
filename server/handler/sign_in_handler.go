@@ -14,6 +14,7 @@ import (
 
 var (
 	ErrMismatchedHashAndPassword = status.Error(codes.Unauthenticated, "unauthorized")
+	ErrUserNotFound              = status.Error(codes.NotFound, "user not found")
 )
 
 type SignInHandlerFunc func(ctx context.Context, req *userv1.SignInRequest) (*userv1.SignInResponse, error)
@@ -28,6 +29,9 @@ func SignIn(db *sql.DB) SignInHandlerFunc {
 		)
 		if err != nil {
 			return nil, err
+		}
+		if u == nil {
+			return nil, ErrUserNotFound
 		}
 
 		if err := bcrypt.CompareHashAndPassword(
