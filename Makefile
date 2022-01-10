@@ -45,7 +45,7 @@ lint:
 ## generate: generate source code for mocking
 generate:
 	@go install golang.org/x/tools/cmd/stringer@latest
-	@go install github.com/golang/mock/mockgen@1.6.0
+	@go install github.com/golang/mock/mockgen@v1.6.0
 	go generate ./...
 
 .PHONY: help

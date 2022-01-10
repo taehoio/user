@@ -15,7 +15,9 @@ import (
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
 
+	authv1 "github.com/taehoio/idl/gen/go/taehoio/idl/services/auth/v1"
 	userv1 "github.com/taehoio/idl/gen/go/taehoio/idl/services/user/v1"
+	"github.com/taehoio/user/client"
 	"github.com/taehoio/user/config"
 	"github.com/taehoio/user/server/handler"
 )
@@ -23,11 +25,34 @@ import (
 type UserServiceServer struct {
 	userv1.UserServiceServer
 
-	cfg config.Config
-	db  *sql.DB
+	cfg     config.Config
+	db      *sql.DB
+	authCli authv1.AuthServiceClient
 }
 
 func NewUserServiceServer(cfg config.Config) (*UserServiceServer, error) {
+	db, err := newMySQLDB(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	//authCli := client.NewAuthServiceClient(cfg.Setting().AuthGRPCServiceEndpoint, false, "/etc/ssl/cert.pem")
+	authCli := client.NewAuthServiceClient(
+		cfg.Setting().AuthGRPCServiceEndpoint,
+		cfg.Setting().ShouldUseGRPCClientTLS,
+		cfg.Setting().CACertFile,
+		cfg.Setting().IsInGCP,
+		cfg.Setting().AuthGRPCServiceURL,
+	)
+
+	return &UserServiceServer{
+		cfg:     cfg,
+		db:      db,
+		authCli: authCli,
+	}, nil
+}
+
+func newMySQLDB(cfg config.Config) (*sql.DB, error) {
 	mysqlCfg := mysql.Config{
 		Net:                  cfg.Setting().MysqlNetworkType,
 		Addr:                 cfg.Setting().MysqlAddress,
@@ -47,10 +72,7 @@ func NewUserServiceServer(cfg config.Config) (*UserServiceServer, error) {
 		return nil, err
 	}
 
-	return &UserServiceServer{
-		cfg: cfg,
-		db:  db,
-	}, nil
+	return db, nil
 }
 
 func (s *UserServiceServer) HealthCheck(ctx context.Context, req *userv1.HealthCheckRequest) (*userv1.HealthCheckResponse, error) {
@@ -62,7 +84,7 @@ func (s *UserServiceServer) SignUp(ctx context.Context, req *userv1.SignUpReques
 }
 
 func (s *UserServiceServer) SignIn(ctx context.Context, req *userv1.SignInRequest) (*userv1.SignInResponse, error) {
-	return handler.SignIn(s.db)(ctx, req)
+	return handler.SignIn(s.db, s.authCli)(ctx, req)
 }
 
 func NewGRPCServer(cfg config.Config) (*grpc.Server, error) {

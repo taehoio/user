@@ -25,7 +25,7 @@ func main() {
 	cfg := config.NewConfig(setting, logger)
 
 	if err := runServer(cfg); err != nil {
-		logrus.Fatal(err)
+		logger.Fatal(err)
 	}
 }
 
