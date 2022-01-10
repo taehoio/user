@@ -51,8 +51,6 @@ cloud.google.com/go/storage v1.18.2 h1:5NQw6tOn3eMm0oE8vTkfjau18kjL79FlMjy/CHTpm
 cloud.google.com/go/storage v1.18.2/go.mod h1:AiIj7BWXyhO5gGVmYJ+S8tbkCx3yb0IMjua8Aw4naVM=
 cloud.google.com/go/trace v1.0.0 h1:laKx2y7IWMjguCe5zZx6n7qLtREk4kyE69SXVC0VSN8=
 cloud.google.com/go/trace v1.0.0/go.mod h1:4iErSByzxkyHWzzlAj63/Gmjz0NH1ASqhJguHpGcr6A=
-contrib.go.opencensus.io/integrations/ocsql v0.1.7 h1:G3k7C0/W44zcqkpRSFyjU9f6HZkbwIrL//qqnlqWZ60=
-contrib.go.opencensus.io/integrations/ocsql v0.1.7/go.mod h1:8DsSdjz3F+APR+0z0WkU1aRorQCFfRxvqjUUPMbF3fE=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
