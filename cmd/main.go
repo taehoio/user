@@ -62,7 +62,7 @@ func runServer(cfg config.Config) error {
 			log.Fatal(err)
 		}
 
-		log.WithField("port", cfg.Setting().GRPCServerPort).Info("starting user gRPC server")
+		log.WithField("port", cfg.Setting().GRPCServerPort).Info("Starting user gRPC server")
 		if err := grpcServer.Serve(lis); err != nil && err != grpc.ErrServerStopped {
 			log.Fatal(err)
 		}
