@@ -12,6 +12,7 @@ import (
 	cloudtrace "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace"
 	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"google.golang.org/grpc"
 
@@ -97,6 +98,13 @@ func setUpTracing() (*sdktrace.TracerProvider, error) {
 
 	tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
 	otel.SetTracerProvider(tp)
+
+	otel.SetTextMapPropagator(
+		propagation.NewCompositeTextMapPropagator(
+			propagation.TraceContext{},
+			propagation.Baggage{},
+		),
+	)
 
 	return tp, nil
 }
