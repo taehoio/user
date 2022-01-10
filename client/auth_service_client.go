@@ -6,6 +6,7 @@ import (
 
 	googlemetadata "cloud.google.com/go/compute/metadata"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"go.opencensus.io/plugin/ocgrpc"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
@@ -37,6 +38,7 @@ func NewAuthServiceClient(
 
 	conn, _ := grpc.Dial(
 		serviceHost,
+		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}),
 		grpc.WithTransportCredentials(creds),
 		grpc.WithDefaultServiceConfig(serviceConfig),
 		grpc.WithUnaryInterceptor(
