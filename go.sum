@@ -234,10 +234,10 @@ github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
-github.com/taehoio/ddl v0.0.0-20220108154548-54fb07bab49a h1:pxCI2Bd9ey+5qkDrvZXqCJ4uUojjA8MEJkiHEYryheY=
-github.com/taehoio/ddl v0.0.0-20220108154548-54fb07bab49a/go.mod h1:sqUwJ4cYtPS4muETqhUe3IkQL9S/CsL85oW3AwUjUl8=
-github.com/taehoio/idl v0.0.0-20220108174352-00f0ef6f3ba6 h1:v3MsenDGIYZDDXG1fqigeFr3zcfosx0oOymfr6CSV40=
-github.com/taehoio/idl v0.0.0-20220108174352-00f0ef6f3ba6/go.mod h1:bIB2TsURu08iiRq8GjSJmhP5WVWqIPzMXdLmAlDaj6Y=
+github.com/taehoio/ddl v0.0.0-20220109040139-a8ce8785d00f h1:Yc2deD5miVn8bpODCZEtsazTwZqFIptUtrvf0vB5csE=
+github.com/taehoio/ddl v0.0.0-20220109040139-a8ce8785d00f/go.mod h1:sqUwJ4cYtPS4muETqhUe3IkQL9S/CsL85oW3AwUjUl8=
+github.com/taehoio/idl v0.0.0-20220109122601-3f390aa5c54e h1:3yKKIb+nNIOz14UXLo/NT9+o8v6Fy5//ahcWBcoHUec=
+github.com/taehoio/idl v0.0.0-20220109122601-3f390aa5c54e/go.mod h1:bIB2TsURu08iiRq8GjSJmhP5WVWqIPzMXdLmAlDaj6Y=
 github.com/xissy/kubeflake v0.0.0-20220101065740-c98e596c8e7f h1:saxOLc0kCUsbyKWx+5IzzacPL/Fl9PPFj8HHW5QlBOM=
 github.com/xissy/kubeflake v0.0.0-20220101065740-c98e596c8e7f/go.mod h1:tJyWqnqxCjLdKQ3IoiedhFJTqE2dI7kB+3e1KqKr8Ks=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

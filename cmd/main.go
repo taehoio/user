@@ -19,26 +19,34 @@ import (
 
 func main() {
 	logrus.SetFormatter(&logrus.JSONFormatter{})
-	log := logrus.StandardLogger()
+	logger := logrus.StandardLogger()
 
 	setting := config.NewSetting()
-	cfg := config.NewConfig(setting)
+	cfg := config.NewConfig(setting, logger)
+
+	if err := runServer(cfg); err != nil {
+		logger.Fatal(err)
+	}
+}
+
+func runServer(cfg config.Config) error {
+	log := cfg.Logger()
 
 	if cfg.Setting().ShouldProfile {
 		if err := setUpProfiler(cfg.Setting().ServiceName); err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
 
 	if cfg.Setting().ShouldTrace {
 		if err := setUpTracing(); err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
 
 	grpcServer, err := server.NewGRPCServer(cfg)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	go func() {
@@ -63,6 +71,8 @@ func main() {
 
 	log.Info("Stopping user gRPC server")
 	grpcServer.GracefulStop()
+
+	return nil
 }
 
 func setUpProfiler(serviceName string) error {

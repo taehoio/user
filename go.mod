@@ -3,13 +3,14 @@ module github.com/taehoio/user
 go 1.17
 
 require (
+	cloud.google.com/go v0.99.0
+	github.com/golang/mock v1.6.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/taehoio/ddl v0.0.0-20220108154548-54fb07bab49a
+	github.com/taehoio/ddl v0.0.0-20220109040139-a8ce8785d00f
 	go.opencensus.io v0.23.0
 )
 
 require (
-	cloud.google.com/go v0.99.0 // indirect
 	cloud.google.com/go/monitoring v1.1.0 // indirect
 	cloud.google.com/go/trace v1.0.0 // indirect
 	github.com/aws/aws-sdk-go v1.37.0 // indirect
@@ -39,7 +40,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.2 // indirect
-	github.com/taehoio/idl v0.0.0-20220108174352-00f0ef6f3ba6
+	github.com/taehoio/idl v0.0.0-20220109122601-3f390aa5c54e
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect

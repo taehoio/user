@@ -16,6 +16,7 @@ import (
 var (
 	ErrNotSupportedProvier = status.Error(codes.Unimplemented, "not supported provider")
 	ErrInvalidPassword     = status.Error(codes.InvalidArgument, "invalid password")
+	ErrAlreadyExists       = status.Error(codes.AlreadyExists, "already exists")
 )
 
 type SignUpHandlerFunc func(ctx context.Context, req *userv1.SignUpRequest) (*userv1.SignUpResponse, error)
@@ -26,26 +27,12 @@ func SignUp(db *sql.DB) SignUpHandlerFunc {
 			return nil, err
 		}
 
-		um := &userddlv1.User{}
-		u, err := um.FindOneByProvideAndIdentifier(
-			db,
-			userddlv1.Provider(req.Provider),
-			req.Identifier,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return nil, err
-		}
-
-		if err == nil && u != nil && u.Id != 0 {
-			return nil, status.Error(codes.AlreadyExists, "already exists")
-		}
-
 		passwordHash, err := hashPassword(req.Password.GetValue())
 		if err != nil {
 			return nil, err
 		}
 
-		u = &userddlv1.User{
+		u := &userddlv1.User{
 			Provider:   userddlv1.Provider(req.Provider),
 			Identifier: req.Identifier,
 			PasswordHash: &wrapperspb.StringValue{
@@ -54,6 +41,9 @@ func SignUp(db *sql.DB) SignUpHandlerFunc {
 		}
 
 		if err := u.Save(db); err != nil {
+			if err == userddlv1.ErrDuplicatedEntry {
+				return nil, ErrAlreadyExists
+			}
 			return nil, err
 		}
 
