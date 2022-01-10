@@ -10,6 +10,8 @@ import (
 	"cloud.google.com/go/profiler"
 	"contrib.go.opencensus.io/exporter/stackdriver"
 	"github.com/sirupsen/logrus"
+	"go.opencensus.io/plugin/ocgrpc"
+	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
 	"google.golang.org/grpc"
 
@@ -86,6 +88,13 @@ func setUpProfiler(serviceName string) error {
 }
 
 func setUpTracing() error {
+	if err := view.Register(ocgrpc.DefaultServerViews...); nil != err {
+		return err
+	}
+	if err := view.Register(ocgrpc.DefaultClientViews...); nil != err {
+		return err
+	}
+
 	exporter, err := stackdriver.NewExporter(stackdriver.Options{})
 	if err != nil {
 		return err
