@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net"
 	"os"
 	"os/signal"
@@ -8,11 +9,10 @@ import (
 	"time"
 
 	"cloud.google.com/go/profiler"
-	"contrib.go.opencensus.io/exporter/stackdriver"
+	cloudtrace "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace"
 	"github.com/sirupsen/logrus"
-	"go.opencensus.io/plugin/ocgrpc"
-	"go.opencensus.io/stats/view"
-	"go.opencensus.io/trace"
+	"go.opentelemetry.io/otel"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"google.golang.org/grpc"
 
 	"github.com/taehoio/user/config"
@@ -41,9 +41,11 @@ func runServer(cfg config.Config) error {
 	}
 
 	if cfg.Setting().ShouldTrace {
-		if err := setUpTracing(); err != nil {
+		tp, err := setUpTracing()
+		if err != nil {
 			return err
 		}
+		defer tp.ForceFlush(context.Background())
 	}
 
 	grpcServer, err := server.NewGRPCServer(cfg)
@@ -87,23 +89,14 @@ func setUpProfiler(serviceName string) error {
 	return nil
 }
 
-func setUpTracing() error {
-	if err := view.Register(ocgrpc.DefaultServerViews...); nil != err {
-		return err
-	}
-	if err := view.Register(ocgrpc.DefaultClientViews...); nil != err {
-		return err
-	}
-
-	exporter, err := stackdriver.NewExporter(stackdriver.Options{})
+func setUpTracing() (*sdktrace.TracerProvider, error) {
+	exporter, err := cloudtrace.New()
 	if err != nil {
-		return err
+		return nil, nil
 	}
 
-	trace.RegisterExporter(exporter)
-	trace.ApplyConfig(trace.Config{
-		DefaultSampler: trace.AlwaysSample(),
-	})
+	tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+	otel.SetTracerProvider(tp)
 
-	return nil
+	return tp, nil
 }

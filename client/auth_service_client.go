@@ -6,7 +6,7 @@ import (
 
 	googlemetadata "cloud.google.com/go/compute/metadata"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"go.opencensus.io/plugin/ocgrpc"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
@@ -38,13 +38,15 @@ func NewAuthServiceClient(
 
 	conn, _ := grpc.Dial(
 		serviceHost,
-		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}),
 		grpc.WithTransportCredentials(creds),
 		grpc.WithDefaultServiceConfig(serviceConfig),
 		grpc.WithUnaryInterceptor(
 			grpc_middleware.ChainUnaryClient(
 				addIDTokenHeaderInterceptor(isInGCP, serviceURL),
 			),
+		),
+		grpc.WithUnaryInterceptor(
+			otelgrpc.UnaryClientInterceptor(),
 		),
 	)
 
