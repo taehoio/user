@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"time"
 
+	"contrib.go.opencensus.io/integrations/ocsql"
 	"github.com/go-sql-driver/mysql"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
@@ -64,7 +65,16 @@ func newMySQLDB(cfg config.Config) (*sql.DB, error) {
 		ParseTime:            true,
 	}
 
-	db, err := sql.Open("mysql", mysqlCfg.FormatDSN())
+	driverName, err := ocsql.Register(
+		"mysql",
+		ocsql.WithAllTraceOptions(),
+		ocsql.WithInstanceName(cfg.Setting().MysqlDatabaseName),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := sql.Open(driverName, mysqlCfg.FormatDSN())
 	if err != nil {
 		return nil, err
 	}

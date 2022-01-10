@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	cloud.google.com/go v0.99.0
+	contrib.go.opencensus.io/integrations/ocsql v0.1.7
 	github.com/golang/mock v1.6.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/taehoio/ddl v0.0.0-20220109040139-a8ce8785d00f
