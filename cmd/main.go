@@ -13,7 +13,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/sdk/resource"
+	"go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"google.golang.org/grpc"
 
 	"github.com/taehoio/user/config"
@@ -42,7 +44,7 @@ func runServer(cfg config.Config) error {
 	}
 
 	if cfg.Setting().ShouldTrace {
-		tp, err := setUpTracing()
+		tp, err := setUpTracing(cfg.Setting().ServiceName)
 		if err != nil {
 			return err
 		}
@@ -90,13 +92,19 @@ func setUpProfiler(serviceName string) error {
 	return nil
 }
 
-func setUpTracing() (*sdktrace.TracerProvider, error) {
+func setUpTracing(serviceName string) (*trace.TracerProvider, error) {
 	exporter, err := cloudtrace.New()
 	if err != nil {
 		return nil, nil
 	}
 
-	tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+	tp := trace.NewTracerProvider(
+		trace.WithBatcher(exporter),
+		trace.WithResource(resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceNameKey.String(serviceName),
+		)),
+	)
 	otel.SetTracerProvider(tp)
 
 	otel.SetTextMapPropagator(
