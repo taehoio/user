@@ -11,6 +11,7 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
@@ -36,7 +37,6 @@ func NewUserServiceServer(cfg config.Config) (*UserServiceServer, error) {
 		return nil, err
 	}
 
-	//authCli := client.NewAuthServiceClient(cfg.Setting().AuthGRPCServiceEndpoint, false, "/etc/ssl/cert.pem")
 	authCli := client.NewAuthServiceClient(
 		cfg.Setting().AuthGRPCServiceEndpoint,
 		cfg.Setting().ShouldUseGRPCClientTLS,
@@ -93,6 +93,7 @@ func NewGRPCServer(cfg config.Config) (*grpc.Server, error) {
 
 	grpcServer := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(
+			otelgrpc.UnaryServerInterceptor(),
 			grpc_ctxtags.UnaryServerInterceptor(
 				grpc_ctxtags.WithFieldExtractor(
 					grpc_ctxtags.CodeGenRequestFieldExtractor,
