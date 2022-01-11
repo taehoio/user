@@ -31,13 +31,13 @@ func SignIn(db *sql.DB, authCli authv1.AuthServiceClient) SignInHandlerFunc {
 			userddlv1.Provider_PROVIDER_EMAIL,
 			req.GetEmail(),
 		)
+		span.End()
 		if err != nil {
 			return nil, err
 		}
 		if u == nil {
 			return nil, ErrUserNotFound
 		}
-		span.End()
 
 		if err := bcrypt.CompareHashAndPassword(
 			[]byte(u.PasswordHash.GetValue()),
