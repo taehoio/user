@@ -37,13 +37,16 @@ func NewUserServiceServer(cfg config.Config) (*UserServiceServer, error) {
 		return nil, err
 	}
 
-	authCli := client.NewAuthServiceClient(
+	authCli, err := client.NewAuthServiceClient(
 		cfg.Setting().AuthGRPCServiceEndpoint,
 		cfg.Setting().ShouldUseGRPCClientTLS,
 		cfg.Setting().CACertFile,
 		cfg.Setting().IsInGCP,
 		cfg.Setting().AuthGRPCServiceURL,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	return &UserServiceServer{
 		cfg:     cfg,
