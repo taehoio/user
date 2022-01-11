@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -46,13 +45,11 @@ func SignIn(db *sql.DB, authCli authv1.AuthServiceClient) SignInHandlerFunc {
 			return nil, err
 		}
 
-		fmt.Println(authCli)
-
 		authReq := &authv1.AuthRequest{
 			Provider:   userv1.Provider_PROVIDER_EMAIL,
 			Identifier: req.GetEmail(),
 		}
-		authResp, err := authCli.Auth(context.Background(), authReq)
+		authResp, err := authCli.Auth(ctx, authReq)
 		if err != nil {
 			return nil, err
 		}
