@@ -57,6 +57,8 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.0.0 h1:38fNtfhHY6bs22b/D6+hDzO6JR0rDzpGPD36dY2uPL4=
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.0.0/go.mod h1:jE23wM1jvwSKgdGcoOkj5j9n1VWtncW36pL2bK1JU+0=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
+github.com/XSAM/otelsql v0.10.0 h1:y8o7q4NaZEV0dBiUC7TuNTHNKyDaX3Z4anntNu7dfYw=
+github.com/XSAM/otelsql v0.10.0/go.mod h1:7n9dZASOnVJncMmBPQjL5OdjQosb5gryCgsgNISnJVo=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/census-instrumentation/opencensus-proto v0.3.0 h1:t/LhUZLVitR1Ow2YOnduCsavhwFUklBMoGVYUCqmCqk=

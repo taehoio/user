@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/XSAM/otelsql"
 	"github.com/go-sql-driver/mysql"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
@@ -12,6 +13,7 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
@@ -66,7 +68,12 @@ func newMySQLDB(cfg config.Config) (*sql.DB, error) {
 		ParseTime:            true,
 	}
 
-	db, err := sql.Open("mysql", mysqlCfg.FormatDSN())
+	driverName, err := otelsql.Register("mysql", semconv.DBSystemMySQL.Value.AsString())
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := sql.Open(driverName, mysqlCfg.FormatDSN())
 	if err != nil {
 		return nil, err
 	}
