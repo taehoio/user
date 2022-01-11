@@ -48,9 +48,6 @@ func NewAuthServiceClient(
 				addIDTokenHeaderInterceptor(isInGCP, serviceURL),
 			),
 		),
-		grpc.WithUnaryInterceptor(
-			otelgrpc.UnaryClientInterceptor(),
-		),
 	)
 
 	cli = authv1.NewAuthServiceClient(conn)
