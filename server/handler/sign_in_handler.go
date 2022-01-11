@@ -26,12 +26,12 @@ func SignIn(db *sql.DB, authCli authv1.AuthServiceClient) SignInHandlerFunc {
 		um := &userddlv1.User{}
 		tracer := otel.GetTracerProvider()
 		ctx, span := tracer.Tracer("github.com/taehoio/user").Start(ctx, "SignIn.FindOneByProvideAndIdentifier")
+		defer span.End()
 		u, err := um.FindOneByProvideAndIdentifier(
 			db,
 			userddlv1.Provider_PROVIDER_EMAIL,
 			req.GetEmail(),
 		)
-		span.End()
 		if err != nil {
 			return nil, err
 		}
