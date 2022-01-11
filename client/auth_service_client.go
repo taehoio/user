@@ -41,6 +41,9 @@ func NewAuthServiceClient(
 		grpc.WithTransportCredentials(creds),
 		grpc.WithDefaultServiceConfig(serviceConfig),
 		grpc.WithUnaryInterceptor(
+			otelgrpc.UnaryClientInterceptor(),
+		),
+		grpc.WithUnaryInterceptor(
 			grpc_middleware.ChainUnaryClient(
 				addIDTokenHeaderInterceptor(isInGCP, serviceURL),
 			),
