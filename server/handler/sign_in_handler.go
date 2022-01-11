@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"go.opentelemetry.io/otel"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -23,6 +24,8 @@ type SignInHandlerFunc func(ctx context.Context, req *userv1.SignInRequest) (*us
 func SignIn(db *sql.DB, authCli authv1.AuthServiceClient) SignInHandlerFunc {
 	return func(ctx context.Context, req *userv1.SignInRequest) (*userv1.SignInResponse, error) {
 		um := &userddlv1.User{}
+		tracer := otel.GetTracerProvider()
+		ctx, span := tracer.Tracer("github.com/taehoio/user").Start(ctx, "SignIn.FindOneByProvideAndIdentifier")
 		u, err := um.FindOneByProvideAndIdentifier(
 			db,
 			userddlv1.Provider_PROVIDER_EMAIL,
@@ -34,6 +37,7 @@ func SignIn(db *sql.DB, authCli authv1.AuthServiceClient) SignInHandlerFunc {
 		if u == nil {
 			return nil, ErrUserNotFound
 		}
+		span.End()
 
 		if err := bcrypt.CompareHashAndPassword(
 			[]byte(u.PasswordHash.GetValue()),
