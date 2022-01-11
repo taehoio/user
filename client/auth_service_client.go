@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	googlemetadata "cloud.google.com/go/compute/metadata"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -30,29 +29,34 @@ func NewAuthServiceClient(
 	certFile string,
 	isInGCP bool,
 	serviceURL string,
-) authv1.AuthServiceClient {
+) (authv1.AuthServiceClient, error) {
 	creds := insecure.NewCredentials()
 	if shouldUseTLS {
 		creds, _ = credentials.NewClientTLSFromFile(certFile, "")
 	}
 
-	conn, _ := grpc.Dial(
+	conn, err := grpc.Dial(
 		serviceHost,
 		grpc.WithTransportCredentials(creds),
 		grpc.WithDefaultServiceConfig(serviceConfig),
-		grpc.WithUnaryInterceptor(
+		grpc.WithChainUnaryInterceptor(
 			otelgrpc.UnaryClientInterceptor(),
+			addIDTokenHeaderInterceptor(isInGCP, serviceURL),
 		),
-		grpc.WithUnaryInterceptor(
-			grpc_middleware.ChainUnaryClient(
-				addIDTokenHeaderInterceptor(isInGCP, serviceURL),
-			),
-		),
+		//grpc.WithUnaryInterceptor(
+		//	addIDTokenHeaderInterceptor(isInGCP, serviceURL),
+		//),
+		//grpc.WithUnaryInterceptor(
+		//	otelgrpc.UnaryClientInterceptor(),
+		//),
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	cli = authv1.NewAuthServiceClient(conn)
 
-	return cli
+	return cli, nil
 }
 
 func getIDTokenInGCP(serviceURL string) (string, error) {
@@ -69,14 +73,25 @@ func addIDTokenHeaderInterceptor(isInGCP bool, serviceURL string) grpc.UnaryClie
 		invoker grpc.UnaryInvoker,
 		opts ...grpc.CallOption,
 	) error {
-		if isInGCP {
-			idToken, err := getIDTokenInGCP(serviceURL)
-			if err != nil {
-				return err
-			}
+		//if isInGCP {
+		//	idToken, err := getIDTokenInGCP(serviceURL)
+		//	if err != nil {
+		//		return err
+		//	}
 
-			ctx = metadata.AppendToOutgoingContext(ctx, "Authorization", "Bearer "+idToken)
-		}
+		//	ctx = metadata.AppendToOutgoingContext(ctx, "Authorization", "Bearer "+idToken)
+		//}
+
+		fmt.Println(metadata.FromIncomingContext(ctx))
+		fmt.Println(metadata.FromOutgoingContext(ctx))
+		idToken := "idToken"
+
+		requestMetadata, _ := metadata.FromOutgoingContext(ctx)
+		metadataCopy := requestMetadata.Copy()
+		metadataCopy.Append("Authorization", "Bearer "+idToken)
+		ctx = metadata.NewOutgoingContext(ctx, metadataCopy)
+
+		fmt.Println(metadata.FromOutgoingContext(ctx))
 		return invoker(ctx, method, req, resp, cc, opts...)
 	}
 }
