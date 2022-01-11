@@ -43,12 +43,6 @@ func NewAuthServiceClient(
 			otelgrpc.UnaryClientInterceptor(),
 			addIDTokenHeaderInterceptor(isInGCP, serviceURL),
 		),
-		//grpc.WithUnaryInterceptor(
-		//	addIDTokenHeaderInterceptor(isInGCP, serviceURL),
-		//),
-		//grpc.WithUnaryInterceptor(
-		//	otelgrpc.UnaryClientInterceptor(),
-		//),
 	)
 	if err != nil {
 		return nil, err
@@ -73,25 +67,15 @@ func addIDTokenHeaderInterceptor(isInGCP bool, serviceURL string) grpc.UnaryClie
 		invoker grpc.UnaryInvoker,
 		opts ...grpc.CallOption,
 	) error {
-		//if isInGCP {
-		//	idToken, err := getIDTokenInGCP(serviceURL)
-		//	if err != nil {
-		//		return err
-		//	}
+		if isInGCP {
+			idToken, err := getIDTokenInGCP(serviceURL)
+			if err != nil {
+				return err
+			}
 
-		//	ctx = metadata.AppendToOutgoingContext(ctx, "Authorization", "Bearer "+idToken)
-		//}
+			ctx = metadata.AppendToOutgoingContext(ctx, "Authorization", "Bearer "+idToken)
+		}
 
-		fmt.Println(metadata.FromIncomingContext(ctx))
-		fmt.Println(metadata.FromOutgoingContext(ctx))
-		idToken := "idToken"
-
-		requestMetadata, _ := metadata.FromOutgoingContext(ctx)
-		metadataCopy := requestMetadata.Copy()
-		metadataCopy.Append("Authorization", "Bearer "+idToken)
-		ctx = metadata.NewOutgoingContext(ctx, metadataCopy)
-
-		fmt.Println(metadata.FromOutgoingContext(ctx))
 		return invoker(ctx, method, req, resp, cc, opts...)
 	}
 }
