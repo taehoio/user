@@ -7,7 +7,7 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.0.0
 	github.com/golang/mock v1.6.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/taehoio/ddl v0.0.0-20220109040139-a8ce8785d00f
+	github.com/taehoio/ddl v0.0.0-20220116141554-85c207857c14
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.28.0
 	go.opentelemetry.io/otel v1.3.0
 	go.opentelemetry.io/otel/sdk v1.3.0

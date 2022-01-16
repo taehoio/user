@@ -23,7 +23,7 @@ type SignInHandlerFunc func(ctx context.Context, req *userv1.SignInRequest) (*us
 func SignIn(db *sql.DB, authCli authv1.AuthServiceClient) SignInHandlerFunc {
 	return func(ctx context.Context, req *userv1.SignInRequest) (*userv1.SignInResponse, error) {
 		um := &userddlv1.User{}
-		u, err := um.FindOneByProvideAndIdentifier(
+		u, err := um.FindOneByProviderAndIdentifier(
 			db,
 			userddlv1.Provider_PROVIDER_EMAIL,
 			req.GetEmail(),
