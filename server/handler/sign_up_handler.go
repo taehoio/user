@@ -41,7 +41,7 @@ func SignUp(db *sql.DB) SignUpHandlerFunc {
 		}
 
 		if err := u.Save(db); err != nil {
-			if err == userddlv1.ErrDuplicatedEntry {
+			if err == userddlv1.ErrDuplicateEntry {
 				return nil, ErrAlreadyExists
 			}
 			return nil, err
