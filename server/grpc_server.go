@@ -64,6 +64,7 @@ func newMySQLDB(cfg config.Config) (*sql.DB, error) {
 		DBName:               cfg.Setting().MysqlDatabaseName,
 		AllowNativePasswords: true,
 		ParseTime:            true,
+		TLSConfig:            "preferred",
 	}
 
 	db, err := sql.Open("mysql", mysqlCfg.FormatDSN())
