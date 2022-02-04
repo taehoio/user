@@ -7,7 +7,7 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.0.0
 	github.com/golang/mock v1.6.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/taehoio/ddl v0.0.0-20220122140245-97dce3dbec34
+	github.com/taehoio/ddl v0.0.0-20220202070313-55e604cb2551
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.28.0
 	go.opentelemetry.io/otel v1.3.0
 	go.opentelemetry.io/otel/sdk v1.3.0
@@ -42,7 +42,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.2 // indirect
-	github.com/taehoio/idl v0.0.0-20220109122601-3f390aa5c54e
+	github.com/taehoio/idl v0.0.0-20220202105737-36762fbeeea7
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect

@@ -15,6 +15,7 @@ import (
 )
 
 //go:generate mockgen -package client -destination ./auth_service_client_mock.go -mock_names AuthServuceClient=MockAuthServiceClient github.com/taehoio/idl/gen/go/taehoio/idl/services/auth/v1 AuthServiceClient
+
 const serviceConfig = `{"loadBalancingPolicy":"round_robin"}`
 
 var (

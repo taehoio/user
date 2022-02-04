@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"database/sql"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -15,6 +16,7 @@ import (
 
 var (
 	ErrNotSupportedProvier = status.Error(codes.Unimplemented, "not supported provider")
+	ErrInvalidIdentifier   = status.Error(codes.InvalidArgument, "invalid identifier")
 	ErrInvalidPassword     = status.Error(codes.InvalidArgument, "invalid password")
 	ErrAlreadyExists       = status.Error(codes.AlreadyExists, "already exists")
 )
@@ -55,9 +57,16 @@ func validateRequest(req *userv1.SignUpRequest) error {
 	if req.Provider != userv1.Provider_PROVIDER_EMAIL {
 		return ErrNotSupportedProvier
 	}
+
+	req.Identifier = strings.TrimSpace(req.GetIdentifier())
+	if req.Identifier == "" {
+		return ErrInvalidIdentifier
+	}
+
 	if req.Password == nil || len(req.Password.GetValue()) == 0 {
 		return ErrInvalidPassword
 	}
+
 	return nil
 }
 
